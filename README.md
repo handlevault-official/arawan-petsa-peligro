@@ -1,12 +1,14 @@
 # Arawan Petsa de Peligro
 
-Daily and date-based danger/risk level tracker and situation log — part of **HandleVault Digital**.
+**Know the risk before the day catches you off guard—a day and date danger tracker right on your Android device.**
 
-## About the Project
-* **Platform:** Native Android app (`Kotlin`)
-* **Purpose:** Log and track dates, daily notes, and risk/danger levels (`peligro`) directly on your device.
+Built for fast, clear tracking of dates, days, and risk/danger levels (`peligro`) without extra clutter. Part of **HandleVault Digital**.
+
+## Why Use It?
+* **Native Kotlin Android App:** Lightweight, fast, and built specifically for Android devices.
+* **Focused on Dates & Risk (`Peligro`):** Clear logging and visibility for dates and days that need closer attention.
+* **Straightforward & Easy to Follow:** No fluff—just what matters for the day.
 
 ## Support
-If you find this **HandleVault Digital** project helpful, you can support it on Ko-fi:
+If **Arawan Petsa de Peligro** from **HandleVault Digital** helps you out, you can support the project on Ko-fi:
 * **Ko-fi:** https://ko-fi.com/handlevaultofficial
-  
