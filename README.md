@@ -9,4 +9,4 @@ Daily and date-based danger/risk level tracker and situation log — part of **H
 ## Support
 If you find this **HandleVault Digital** project helpful, you can support it on Ko-fi:
 * **Ko-fi:** https://ko-fi.com/handlevaultofficial
-* 
+  
