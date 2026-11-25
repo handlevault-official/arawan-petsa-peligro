@@ -1,0 +1,6 @@
+{
+  "name": "Arawan Budget",
+  "description": "Mobile-first Arawan Budget & Petsa De Peligro Survival Planner for Filipino users to stretch remaining balance until next payday.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

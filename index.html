@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arawan Budget &amp; Petsa De Peligro Survival Planner</title>
+  <style>
+    /* Theme tokens: Light (default) & Dark mode */
+    :root {
+      --bg: #faf8f4;
+      --surface: #ffffff;
+      --surface-alt: #f1efe8;
+      --text: #141a18;
+      --muted: #56605c;
+      --border: #dcd8ce;
+      --safe: #0c795a;
+      --safe-bg: #d5f5ea;
+      --tight: #d97706;
+      --tight-bg: #fef3c7;
+      --critical: #dc2626;
+      --critical-bg: #fee2e2;
+      --kofi-bg: #fff4ee;
+      --kofi-border: #f5cbb6;
+      --kofi-btn: #ff5e5b;
+      --shadow: 0 4px 16px rgba(20, 26, 24, 0.06);
+    }
+
+    body.dark {
+      --bg: #0e1412;
+      --surface: #17201d;
+      --surface-alt: #212d29;
+      --text: #f1f5f3;
+      --muted: #9eb0a9;
+      --border: #2e3d37;
+      --safe: #34d399;
+      --safe-bg: #0b4a38;
+      --tight: #fbbf24;
+      --tight-bg: #5a3208;
+      --critical: #f87171;
+      --critical-bg: #5c1919;
+      --kofi-bg: #2a1d19;
+      --kofi-border: #5e392e;
+      --kofi-btn: #ff7a77;
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 16px 14px 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 2px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #0c795a;
+      color: #fbbf24;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .brand h1 { margin: 0; font-size: 1.08rem; }
+    .brand p { margin: 0; font-size: 0.78rem; color: var(--muted); }
+
+    .icon-actions { display: flex; gap: 8px; }
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 12px;
+      min-height: 44px;
+      padding: 8px 12px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: transform 0.08s ease, opacity 0.15s ease;
+    }
+    button:active { transform: scale(0.98); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .card.locked-card { background: var(--surface-alt); }
+    .card.critical-glow-card {
+      border-color: var(--critical);
+      box-shadow: 0 0 28px rgba(220, 38, 38, 0.24);
+    }
+
+    .card-title { margin: 0; font-size: 1.02rem; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 0.84rem; margin: 0; }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .badge.safe { background: var(--safe-bg); color: var(--safe); }
+    .badge.tight { background: var(--tight-bg); color: var(--tight); }
+    .badge.critical { background: var(--critical-bg); color: var(--critical); }
+
+    .days-pill {
+      background: var(--surface-alt);
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .hero-box {
+      background: var(--surface-alt);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid transparent;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .hero-box.critical-glow {
+      border-color: var(--critical);
+      box-shadow: 0 0 24px rgba(220, 38, 38, 0.36);
+    }
+
+    .hero-label { font-size: 0.72rem; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
+    .hero-amount {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      margin: 2px 0;
+    }
+
+    .gauge-wrap { position: relative; width: 76px; height: 76px; flex-shrink: 0; }
+    .gauge-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+    .gauge-center span { font-size: 0.62rem; color: var(--muted); }
+
+    .runway-track {
+      width: 100%;
+      height: 10px;
+      background: var(--surface-alt);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .runway-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.25s ease, background 0.25s ease;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 0.85rem; font-weight: 600; }
+    input {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      min-height: 40px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+    }
+    .chip.active {
+      background: var(--safe-bg);
+      color: var(--safe);
+      border-color: var(--safe);
+    }
+
+    .cut-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .cut-item.active {
+      background: var(--safe-bg);
+      border-color: var(--safe);
+    }
+    .cut-title { font-weight: 600; font-size: 0.9rem; }
+    .cut-sub { font-size: 0.78rem; color: var(--muted); }
+    .cut-save { color: var(--safe); font-weight: 700; font-size: 0.8rem; }
+
+    .boost-banner {
+      background: var(--safe-bg);
+      color: var(--safe);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1.15fr; gap: 10px; }
+    .primary-btn {
+      background: var(--safe);
+      color: #ffffff;
+      border: none;
+      width: 100%;
+    }
+    body.dark .primary-btn { color: #042f21; }
+
+    .expense-list { display: flex; flex-direction: column; gap: 8px; }
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--surface-alt);
+      border-radius: 12px;
+    }
+    .expense-amt { color: var(--critical); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .undo-btn { min-height: 36px; padding: 4px 10px; font-size: 0.78rem; }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+    .cal-cell {
+      background: var(--surface-alt);
+      border-radius: 8px;
+      padding: 5px 2px;
+      text-align: center;
+      font-size: 0.72rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .cal-cell.today { outline: 2px solid var(--safe); font-weight: 700; }
+    .cal-dot { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
+    .cal-dot.active { background: var(--safe); }
+
+    .summary-preview {
+      background: var(--surface-alt);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+    }
+
+    .kofi-card {
+      background: var(--kofi-bg);
+      border-color: var(--kofi-border);
+    }
+    .kofi-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      background: var(--kofi-btn);
+      color: #ffffff;
+      border-radius: 12px;
+      min-height: 46px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 10px 14px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">₱</div>
+        <div>
+          <h1>Arawan Budget</h1>
+          <p>Petsa De Peligro Survival Planner</p>
+        </div>
+      </div>
+      <div class="icon-actions">
+        <button id="themeBtn" type="button" aria-label="Toggle dark or light mode">🌙</button>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+    </header>
+
+    <!-- Locked Untouchable Emergency Fund Bucket -->
+    <section class="card locked-card">
+      <div class="status-row">
+        <div>
+          <h2 class="card-title">🔒 Locked Emergency Fund</h2>
+          <p class="muted">Reserved &amp; excluded from daily spending</p>
+        </div>
+        <span id="lockedBadge" class="badge tight">UNTOUCHABLE</span>
+      </div>
+      <input id="lockedInput" type="number" min="0" step="1" inputmode="decimal" placeholder="0 (untouchable emergency fund)" />
+      <div class="chip-row" id="quickLockedRow">
+        <button type="button" class="chip" data-locked="0">None</button>
+        <button type="button" class="chip" data-locked="500">₱500</button>
+        <button type="button" class="chip" data-locked="1000">₱1,000</button>
+        <button type="button" class="chip" data-locked="2000">₱2,000</button>
+      </div>
+    </section>
+
+    <!-- 1. Payday Countdown & Safe Arawan Allowance -->
+    <section id="heroCard" class="card">
+      <div class="status-row">
+        <span id="statusBadge" class="badge safe">✅ Safe • Luwag Pa</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span id="streakPill" class="days-pill">🔥 0d streak</span>
+          <span id="jarPill" class="days-pill">🪙 ₱0</span>
+        </div>
+      </div>
+
+      <div id="heroBox" class="hero-box">
+        <div>
+          <div class="hero-label">SAFE ARAWAN ALLOWANCE</div>
+          <div id="dailyAllowance" class="hero-amount">₱500/day</div>
+          <p id="statusHint" class="muted">Kaya pang huminga! Stick to your daily cap.</p>
+        </div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 80 80" width="76" height="76" aria-hidden="true">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="8" />
+            <circle id="gaugeArc" cx="40" cy="40" r="32" fill="none" stroke="var(--safe)" stroke-width="8"
+              stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="60"
+              transform="rotate(-90 40 40)" />
+          </svg>
+          <div class="gauge-center">
+            <span id="gaugeDays" style="font-size:1.05rem;color:var(--text);">7</span>
+            <span>DAYS</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="status-row" style="margin-bottom:6px;">
+          <span id="weeklyBurn" class="muted">Weekly Burn Pace: ₱3,500/wk</span>
+          <span id="stashPct" class="muted">100% stash left</span>
+        </div>
+        <div class="runway-track">
+          <div id="runwayFill" class="runway-fill" style="width:100%;background:var(--safe);"></div>
+        </div>
+      </div>
+
+      <!-- Daily Check-in -->
+      <div style="background:var(--surface-alt);padding:12px;border-radius:14px;display:flex;flex-direction:column;gap:8px;">
+        <div class="status-row">
+          <strong style="font-size:0.88rem;">Daily Check-In</strong>
+          <span id="checkinStatusText" class="muted">Did you stay within today's limit?</span>
+        </div>
+        <div class="grid-2">
+          <button id="checkMetBtn" type="button" class="chip">✓ Met Allowance</button>
+          <button id="checkExceedBtn" type="button" class="chip">✕ Exceeded</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="balanceInput">Remaining Cash / E-Wallet (₱)</label>
+        <input id="balanceInput" type="number" min="0" step="1" inputmode="decimal" />
+        <div class="chip-row">
+          <button type="button" class="chip" data-delta="-100">-₱100</button>
+          <button type="button" class="chip" data-delta="100">+₱100</button>
+          <button type="button" class="chip" data-delta="500">+₱500</button>
+          <button type="button" class="chip" data-delta="1000">+₱1,000</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="status-row">
+          <label for="savingsInput">Target Savings by Payday (₱)</label>
+          <span id="savingsDailyPill" class="days-pill" style="display:none;"></span>
+        </div>
+        <input id="savingsInput" type="number" min="0" step="1" inputmode="decimal" placeholder="0 (optional savings goal)" />
+        <div class="chip-row" id="quickSavingsRow">
+          <button type="button" class="chip" data-savings="0">No Goal</button>
+          <button type="button" class="chip" data-savings="300">₱300</button>
+          <button type="button" class="chip" data-savings="500">₱500</button>
+          <button type="button" class="chip" data-savings="1000">₱1,000</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="status-row">
+          <label for="hardLimitInput">Hard Daily Limit (₱/day)</label>
+          <span id="hardLimitPill" class="days-pill">Safe above limit</span>
+        </div>
+        <input id="hardLimitInput" type="number" min="0" step="1" inputmode="decimal" placeholder="200 (early Critical alert)" />
+        <div class="chip-row" id="quickHardLimitRow">
+          <button type="button" class="chip" data-limit="200">₱200</button>
+          <button type="button" class="chip" data-limit="300">₱300</button>
+          <button type="button" class="chip" data-limit="400">₱400</button>
+          <button type="button" class="chip" data-limit="500">₱500</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="paydayInput">Next Payday / Allowance Date</label>
+        <input id="paydayInput" type="date" />
+        <div class="chip-row" id="quickDaysRow">
+          <button type="button" class="chip" data-days="3">3 days</button>
+          <button type="button" class="chip" data-days="5">5 days</button>
+          <button type="button" class="chip" data-days="7">7 days</button>
+          <button type="button" class="chip" data-days="10">10 days</button>
+          <button type="button" class="chip" data-days="15">15 days</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Savings Progress, Forecast & Trajectory Chart -->
+    <section class="card">
+      <div class="status-row">
+        <h2 class="card-title">Savings Progress &amp; Payday Forecast</h2>
+        <span id="savingsProgressPill" class="days-pill">0%</span>
+      </div>
+      <div class="runway-track">
+        <div id="savingsProgressFill" class="runway-fill" style="width:0%;background:var(--safe);"></div>
+      </div>
+      <p id="savingsProgressDesc" class="muted"></p>
+
+      <div id="forecastBanner" class="badge safe" style="border-radius:14px;padding:12px;display:block;"></div>
+
+      <div>
+        <div class="muted" style="font-weight:700;margin-bottom:6px;">Savings Projection Until Payday</div>
+        <svg id="projectionSvg" viewBox="0 0 340 120" width="100%" height="120" style="display:block;"></svg>
+      </div>
+    </section>
+
+    <!-- Budgeting Wisdom & AI Coach Voice + Daily Reminder -->
+    <section class="card">
+      <div class="status-row">
+        <div>
+          <h2 class="card-title">✨ Budgeting Wisdom</h2>
+          <p class="muted">Daily Taglish tip for Petsa De Peligro</p>
+        </div>
+        <button id="refreshWisdomBtn" type="button" class="undo-btn">New Tip</button>
+      </div>
+      <div id="wisdomText" class="summary-preview"></div>
+      <div class="status-row">
+        <label><input id="coachToggle" type="checkbox" style="width:auto;min-height:auto;margin-right:6px;" checked /> AI Financial Coach (Voice)</label>
+        <button id="listenBtn" type="button" class="undo-btn">🔊 Listen to Advice</button>
+      </div>
+      <div class="status-row">
+        <label><input id="reminderToggle" type="checkbox" style="width:auto;min-height:auto;margin-right:6px;" /> End-of-Day Reminder (8 PM)</label>
+        <button id="testNotifyBtn" type="button" class="undo-btn">Test Alert</button>
+      </div>
+    </section>
+
+    <!-- 2. Emergency Tipid Cuts -->
+    <section class="card">
+      <div>
+        <h2 class="card-title">Emergency Tipid Cuts</h2>
+        <p class="muted">Toggle cuts to see extra ₱/day freed and survival days gained</p>
+      </div>
+      <div id="tipidBoostBanner" class="boost-banner">
+        <span id="tipidBoostText"></span>
+        <span id="extraDaysBadge"></span>
+      </div>
+      <div id="cutsContainer" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </section>
+
+    <!-- Utang Tracker below Tipid Cuts -->
+    <section class="card">
+      <div class="status-row">
+        <div>
+          <h2 class="card-title">Utang &amp; Bills Tracker</h2>
+          <p class="muted">Subtracted from balance for real daily allowance</p>
+        </div>
+        <span id="totalUtangPill" class="days-pill">₱0</span>
+      </div>
+      <div class="grid-2">
+        <input id="utangTitle" type="text" placeholder="Utang / Bill name" />
+        <input id="utangAmt" type="number" min="0" step="1" inputmode="decimal" placeholder="Amount (₱)" />
+      </div>
+      <button id="addUtangBtn" type="button" class="primary-btn">Add Obligation</button>
+      <div id="utangList" class="expense-list"></div>
+    </section>
+
+    <!-- 3. Quick Expense Logger + Analytics -->
+    <section class="card">
+      <div class="status-row">
+        <div>
+          <h2 class="card-title">Quick Expense Logger</h2>
+          <p class="muted">Subtracts &amp; recalculates allowance immediately</p>
+        </div>
+        <span id="totalSpentPill" class="days-pill">Spent: ₱0</span>
+      </div>
+
+      <div class="chip-row" id="categoryRow">
+        <button type="button" class="chip active" data-cat="Pagkain">Pagkain</button>
+        <button type="button" class="chip" data-cat="Pamasahe/Load">Pamasahe/Load</button>
+        <button type="button" class="chip" data-cat="Bills">Bills</button>
+        <button type="button" class="chip" data-cat="Iba Pa">Iba Pa</button>
+      </div>
+
+      <div class="grid-2">
+        <input id="spendAmt" type="number" min="0" step="1" inputmode="decimal" placeholder="Log Spend (₱)" />
+        <input id="spendNote" type="text" placeholder="Note (e.g. Siomai rice)" />
+      </div>
+
+      <!-- Paisa-Piso Round-Up Toggle -->
+      <div style="background:var(--surface-alt);padding:10px 12px;border-radius:12px;">
+        <div class="status-row">
+          <label><input id="roundUpToggle" type="checkbox" style="width:auto;min-height:auto;margin-right:6px;" /> Paisa-Piso Round-Up Savings</label>
+          <div style="display:flex;gap:6px;">
+            <button type="button" class="chip active" data-inc="10">₱10</button>
+            <button type="button" class="chip" data-inc="50">₱50</button>
+          </div>
+        </div>
+        <p id="roundUpHint" class="muted" style="margin-top:4px;"></p>
+      </div>
+
+      <button id="logSpendBtn" type="button" class="primary-btn">Log Spend (₱)</button>
+
+      <div class="status-row" id="expenseHeaderRow" style="display:none;">
+        <span class="muted" style="font-weight:700;">Expense History</span>
+        <button id="exportCsvBtn" type="button" class="undo-btn">Export CSV</button>
+      </div>
+      <div id="expenseList" class="expense-list"></div>
+
+      <hr style="border:none;border-top:1px solid var(--border);width:100%;" />
+      <div>
+        <div class="muted" style="font-weight:700;margin-bottom:8px;">Where Your Money Goes</div>
+        <div id="categoryBars" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);width:100%;" />
+      <div>
+        <div class="muted" style="font-weight:700;margin-bottom:6px;">7-Day Spending Trend</div>
+        <svg id="trendLineSvg" viewBox="0 0 340 110" width="100%" height="110" style="display:block;"></svg>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);width:100%;" />
+      <div>
+        <div class="muted" style="font-weight:700;margin-bottom:6px;">Spending Distribution Pie</div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <svg id="pieSvg" viewBox="0 0 100 100" width="96" height="96"></svg>
+          <div id="pieLegend" style="flex:1;display:flex;flex-direction:column;gap:4px;font-size:0.8rem;"></div>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);width:100%;" />
+      <div>
+        <div class="status-row" style="margin-bottom:6px;">
+          <span id="calTitle" class="muted" style="font-weight:700;">Logging Calendar</span>
+          <span id="calActiveCount" class="muted"></span>
+        </div>
+        <div id="calendarGrid" class="cal-grid"></div>
+      </div>
+    </section>
+
+    <!-- 4. Shareable Summary & Ko-fi Reminder -->
+    <section class="card">
+      <h2 class="card-title">Shareable Survival Summary</h2>
+      <div id="summaryPreview" class="summary-preview"></div>
+      <button id="copySummaryBtn" type="button" class="primary-btn">Copy Survival Summary</button>
+    </section>
+
+    <section class="card kofi-card">
+      <h2 class="card-title">Pag May Pera Na Reminder ☕</h2>
+      <p style="margin:0;font-size:0.92rem;">
+        Nakatulong ba? Wag tayo kalimutan—pag may pera na o nakaluwag ka, mag-send ng $2 tip sa Ko-fi para sa HandleVault Digital ☕
+      </p>
+      <a class="kofi-btn" href="https://ko-fi.com/handlevaultofficial" target="_blank" rel="noopener noreferrer">
+        Send $2 Tip on Ko-fi ↗
+      </a>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "arawan_budget_planner_v2";
+    const TIPID_CUTS = [
+      { id: "coffee", title: "Skip Iced Coffee / Milk Tea", sub: "3-in-1 or brewed sa bahay muna", save: 140 },
+      { id: "cook", title: "Cook at Home Instead of Delivery", sub: "Iwas delivery fee & markup", save: 220 },
+      { id: "impulse", title: "Cut Impulse Buys / Checkout", sub: "Hold muna ang add-to-cart", save: 150 },
+      { id: "jeep", title: "Jeep / Lakad Over Ride-Hailing", sub: "Tipid pamasahe hanggang sahod", save: 180 },
+      { id: "baon", title: "Baon Lunch & Water Tumbler", sub: "No bottled drinks or fast food", save: 120 }
+    ];
+    const WISDOM_QUOTES = [
+      "Kahit maliit ang natira, basta disiplinado sa arawan, aabot ka sa sahod nang walang bagong utang!",
+      "I-pause ang add-to-cart ng 48 hours—kung kailangan pa rin after two days, saka pag-isipan.",
+      "Tubig sa tumbler + baon sa trabaho = instant ₱150+ tipid araw-araw para sa Emergency Fund.",
+      "Hindi nakakahiya mag-tipid sa Petsa De Peligro; ang nakakahiya ay ang ma-zero bago mag-sahod.",
+      "Treat your savings like a non-negotiable bill: itabi muna bago gumastos.",
+      "Sa bawat barya sa Paisa-Piso Jar, lumalaki ang peace of mind mo for rainy days."
+    ];
+    const CATS = [
+      { key: "Pagkain", color: "#0c795a" },
+      { key: "Pamasahe/Load", color: "#d97706" },
+      { key: "Bills", color: "#dc2626" },
+      { key: "Iba Pa", color: "#3b82f6" }
+    ];
+
+    const todayIso = (offsetDays = 0) => {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + offsetDays);
+      return d.toISOString().slice(0, 10);
+    };
+
+    const defaultState = () => ({
+      balance: 3500,
+      startingBalance: 3500,
+      lockedFund: 0,
+      targetSavings: 0,
+      hardDailyLimit: 200,
+      payday: todayIso(7),
+      activeCuts: [],
+      utangItems: [],
+      expenses: [],
+      roundUpEnabled: false,
+      roundUpInc: 10,
+      paisaPisoJar: 0,
+      checkInSaved: 0,
+      streak: 0,
+      lastCheckInDate: "",
+      lastCheckInStatus: "",
+      coachEnabled: true,
+      reminderEnabled: false,
+      selectedCategory: "Pagkain",
+      dark: false
+    });
+
+    let state = loadState();
+    let currentQuote = WISDOM_QUOTES[Math.floor(Math.random() * WISDOM_QUOTES.length)];
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? { ...defaultState(), ...JSON.parse(raw) } : defaultState();
+      } catch {
+        return defaultState();
+      }
+    }
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    const fmtPeso = (val) => "₱" + Number(Math.max(0, val)).toLocaleString("en-PH", { maximumFractionDigits: 2 });
+
+    function calcDaysLeft() {
+      const now = new Date(); now.setHours(0, 0, 0, 0);
+      const target = new Date(state.payday + "T00:00:00");
+      return Math.max(1, Math.round((target - now) / 86400000) || 1);
+    }
+
+    function calcRoundUp(amount, inc) {
+      if (!amount || amount <= 0) return 0;
+      const rem = amount % inc;
+      return rem < 0.001 ? 0 : inc - rem;
+    }
+
+    function render() {
+      document.body.classList.toggle("dark", !!state.dark);
+      document.getElementById("themeBtn").textContent = state.dark ? "☀️" : "🌙";
+
+      const days = calcDaysLeft();
+      const locked = Math.max(0, Number(state.lockedFund) || 0);
+      const totalUtang = state.utangItems.reduce((s, u) => s + u.amount, 0);
+      const targetSavings = Math.max(0, Number(state.targetSavings) || 0);
+      const hardLimit = Math.max(0, Number(state.hardDailyLimit) ?? 200);
+      const critThresh = hardLimit > 0 ? hardLimit : 200;
+
+      const spendable = Math.max(0, state.balance - locked - totalUtang - targetSavings);
+      const daily = spendable / days;
+      const dailySavings = targetSavings / days;
+      const belowLimit = hardLimit > 0 && daily < hardLimit;
+      const weekly = daily * 7;
+
+      const tipidBoost = TIPID_CUTS.filter(c => state.activeCuts.includes(c.id)).reduce((s, c) => s + c.save, 0);
+      const totalSaved = tipidBoost * days;
+      const extraDays = tipidBoost > 0 && spendable > 0 ? Math.floor(totalSaved / Math.max(150, daily)) : 0;
+
+      let statusCls = "safe", statusTxt = "✅ Safe • Luwag Pa", hint = "Kaya pang huminga! Stick to your daily cap.";
+      if (spendable <= 0 || daily < critThresh) {
+        statusCls = "critical";
+        statusTxt = "🚨 Critical • Petsa De Peligro";
+        hint = belowLimit ? `CRITICAL: Below your ${fmtPeso(hardLimit)}/day hard limit!` : "Survival mode ON!";
+      } else if (daily < 500) {
+        statusCls = "tight"; statusTxt = "⚠️ Tight • Ingat"; hint = "Medyo manipis na. Prioritize essentials.";
+      }
+
+      document.getElementById("heroCard").classList.toggle("critical-glow-card", statusCls === "critical");
+      document.getElementById("heroBox").classList.toggle("critical-glow", statusCls === "critical");
+      const badge = document.getElementById("statusBadge");
+      badge.className = "badge " + statusCls;
+      badge.textContent = statusTxt;
+      document.getElementById("streakPill").textContent = `🔥 ${state.streak}d streak`;
+      document.getElementById("jarPill").textContent = `🪙 ${fmtPeso(state.paisaPisoJar)}`;
+      document.getElementById("gaugeDays").textContent = days;
+
+      const dailyEl = document.getElementById("dailyAllowance");
+      dailyEl.textContent = `${fmtPeso(daily)}/day`;
+      dailyEl.style.color = statusCls === "critical" ? "var(--critical)" : "var(--text)";
+      document.getElementById("statusHint").textContent = belowLimit
+        ? `🚨 Below your ${fmtPeso(hardLimit)}/day hard limit!`
+        : (targetSavings > 0 ? `Set aside ${fmtPeso(dailySavings)}/day to save ${fmtPeso(targetSavings)}` : hint);
+      document.getElementById("weeklyBurn").textContent = `Weekly Burn Pace: ${fmtPeso(weekly)}/wk`;
+
+      const pct = Math.min(100, Math.max(2, Math.round((state.balance / Math.max(1, state.startingBalance, state.balance)) * 100)));
+      document.getElementById("stashPct").textContent = `${pct}% stash left`;
+      const fill = document.getElementById("runwayFill");
+      fill.style.width = pct + "%"; fill.style.background = `var(--${statusCls})`;
+
+      const arc = document.getElementById("gaugeArc");
+      arc.style.strokeDashoffset = String(201 * (1 - Math.min(1, Math.max(0.05, daily / 700))));
+      arc.style.stroke = `var(--${statusCls})`;
+
+      // Inputs sync
+      const lockedIn = document.getElementById("lockedInput");
+      if (document.activeElement !== lockedIn) lockedIn.value = locked > 0 ? locked : "";
+      document.getElementById("lockedBadge").textContent = locked > 0 ? `UNTOUCHABLE • ${fmtPeso(locked)}` : "UNTOUCHABLE";
+      document.querySelectorAll("#quickLockedRow .chip").forEach(b => b.classList.toggle("active", Number(b.dataset.locked) === locked));
+
+      const balIn = document.getElementById("balanceInput");
+      if (document.activeElement !== balIn) balIn.value = state.balance;
+      const savIn = document.getElementById("savingsInput");
+      if (document.activeElement !== savIn) savIn.value = targetSavings > 0 ? targetSavings : "";
+      const limIn = document.getElementById("hardLimitInput");
+      if (document.activeElement !== limIn) limIn.value = hardLimit > 0 ? hardLimit : "";
+      document.getElementById("paydayInput").value = state.payday;
+
+      // Check-in UI
+      const todayStr = todayIso(0);
+      const checkedToday = state.lastCheckInDate === todayStr;
+      document.getElementById("checkMetBtn").classList.toggle("active", checkedToday && state.lastCheckInStatus === "MET");
+      document.getElementById("checkExceedBtn").classList.toggle("active", checkedToday && state.lastCheckInStatus === "EXCEEDED");
+      document.getElementById("checkinStatusText").textContent = checkedToday
+        ? (state.lastCheckInStatus === "MET" ? "Logged: Met Allowance ✓" : "Logged: Exceeded today")
+        : "Did you stay within today's limit?";
+
+      // Savings Progress & Forecast
+      const totalAccumulated = state.paisaPisoJar + state.checkInSaved;
+      const goalPct = targetSavings > 0 ? Math.min(100, Math.round((totalAccumulated / targetSavings) * 100)) : 0;
+      document.getElementById("savingsProgressPill").textContent = targetSavings > 0 ? `${goalPct}%` : `Jar: ${fmtPeso(totalAccumulated)}`;
+      document.getElementById("savingsProgressFill").style.width = (targetSavings > 0 ? goalPct : (totalAccumulated > 0 ? 25 : 0)) + "%";
+      document.getElementById("savingsProgressDesc").textContent = targetSavings > 0
+        ? `${fmtPeso(totalAccumulated)} set aside (Paisa-Piso + Check-ins) out of ${fmtPeso(targetSavings)} goal`
+        : "Set a Target Savings goal or use Paisa-Piso round-ups to fill this bar.";
+
+      const spentTotal = state.expenses.reduce((s, e) => s + e.amount, 0);
+      const distinctDays = Math.max(1, new Set(state.expenses.map(e => e.dayIso)).size);
+      const observedBurn = state.expenses.length ? (spentTotal / distinctDays) : daily;
+      const availBeforeGoal = Math.max(0, state.balance - locked - totalUtang);
+      const projectedPayday = availBeforeGoal - observedBurn * days;
+      const fBanner = document.getElementById("forecastBanner");
+      fBanner.className = "badge " + (projectedPayday < 0 ? "critical" : "safe");
+      fBanner.textContent = `Payday Forecast: At ${fmtPeso(observedBurn)}/day trend, projected balance on ${state.payday} is ${projectedPayday < 0 ? "-" : ""}${fmtPeso(Math.abs(projectedPayday))}.`;
+
+      // SVG Savings Projection
+      const pSvg = document.getElementById("projectionSvg");
+      const maxVal = Math.max(availBeforeGoal, targetSavings, 500);
+      const pts = [];
+      for (let d = 0; d <= days; d++) {
+        const x = 14 + (312 * d / days);
+        const val = Math.max(0, availBeforeGoal - observedBurn * d);
+        const y = 105 - (90 * Math.min(1, val / maxVal));
+        pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+      }
+      const goalY = targetSavings > 0 ? (105 - (90 * Math.min(1, targetSavings / maxVal))).toFixed(1) : null;
+      pSvg.innerHTML = `
+        <line x1="14" y1="105" x2="326" y2="105" stroke="var(--border)" stroke-width="1.5" />
+        ${goalY ? `<line x1="14" y1="${goalY}" x2="326" y2="${goalY}" stroke="var(--tight)" stroke-width="2" stroke-dasharray="6 5" />` : ""}
+        <polyline fill="none" stroke="${projectedPayday < 0 ? "var(--critical)" : "var(--safe)"}" stroke-width="3" stroke-linecap="round" points="${pts.join(" ")}" />
+      `;
+
+      // Wisdom & Coach
+      document.getElementById("wisdomText").textContent = `"${currentQuote}"`;
+      document.getElementById("coachToggle").checked = !!state.coachEnabled;
+      document.getElementById("listenBtn").style.display = state.coachEnabled ? "inline-block" : "none";
+      document.getElementById("reminderToggle").checked = !!state.reminderEnabled;
+
+      // Tipid Cuts
+      const boostBanner = document.getElementById("tipidBoostBanner");
+      boostBanner.style.display = tipidBoost > 0 ? "flex" : "none";
+      if (tipidBoost > 0) {
+        document.getElementById("tipidBoostText").textContent = `Daily Cushion: +${fmtPeso(tipidBoost)}/day`;
+        document.getElementById("extraDaysBadge").textContent = extraDays > 0 ? `+${extraDays}d runway` : "";
+      }
+      const cutsEl = document.getElementById("cutsContainer");
+      cutsEl.innerHTML = "";
+      TIPID_CUTS.forEach(cut => {
+        const active = state.activeCuts.includes(cut.id);
+        const div = document.createElement("div");
+        div.className = "cut-item" + (active ? " active" : "");
+        div.innerHTML = `<div><div class="cut-title">${cut.title}</div><div class="cut-sub"><span class="cut-save">+${fmtPeso(cut.save)}/day</span> • ${cut.sub}</div></div><input type="checkbox" ${active ? "checked" : ""} style="width:20px;min-height:20px;accent-color:var(--safe);" />`;
+        div.onclick = () => {
+          state.activeCuts = active ? state.activeCuts.filter(i => i !== cut.id) : [...state.activeCuts, cut.id];
+          saveState(); render();
+        };
+        cutsEl.appendChild(div);
+      });
+
+      // Utang List
+      document.getElementById("totalUtangPill").textContent = `-${fmtPeso(totalUtang)}`;
+      const utangEl = document.getElementById("utangList");
+      utangEl.innerHTML = "";
+      state.utangItems.forEach(u => {
+        const r = document.createElement("div");
+        r.className = "expense-item";
+        r.innerHTML = `<span><strong>${u.title}</strong></span><div style="display:flex;align-items:center;gap:8px;"><span class="expense-amt">-${fmtPeso(u.amount)}</span><button type="button" class="undo-btn">Paid</button></div>`;
+        r.querySelector(".undo-btn").onclick = () => { state.utangItems = state.utangItems.filter(x => x.id !== u.id); saveState(); render(); };
+        utangEl.appendChild(r);
+      });
+
+      // Round-Up & Expenses
+      document.getElementById("roundUpToggle").checked = !!state.roundUpEnabled;
+      document.getElementById("roundUpHint").textContent = `Jar Total: ${fmtPeso(state.paisaPisoJar)} • Rounds up to nearest ₱${state.roundUpInc}`;
+      document.getElementById("totalSpentPill").textContent = `Spent: ${fmtPeso(spentTotal)}`;
+      const listEl = document.getElementById("expenseList");
+      document.getElementById("expenseHeaderRow").style.display = state.expenses.length ? "flex" : "none";
+      listEl.innerHTML = state.expenses.length ? "" : `<p class="muted">Wala pang gastos logged today.</p>`;
+      state.expenses.slice(0, 8).forEach(exp => {
+        const row = document.createElement("div");
+        row.className = "expense-item";
+        row.innerHTML = `<div><strong>${exp.category}</strong>${exp.note ? " • " + exp.note : ""}<div class="muted">${exp.time}</div></div><div style="display:flex;align-items:center;gap:8px;"><span class="expense-amt">-${fmtPeso(exp.amount)}</span><button type="button" class="undo-btn">Undo</button></div>`;
+        row.querySelector(".undo-btn").onclick = () => { state.balance += exp.amount; state.expenses = state.expenses.filter(x => x.id !== exp.id); saveState(); render(); };
+        listEl.appendChild(row);
+      });
+
+      // Category Bars & Pie Chart
+      const barsEl = document.getElementById("categoryBars");
+      const pieSvg = document.getElementById("pieSvg");
+      const pieLeg = document.getElementById("pieLegend");
+      barsEl.innerHTML = ""; pieLeg.innerHTML = "";
+      let piePaths = "", startDeg = 0;
+      CATS.forEach(c => {
+        const sum = state.expenses.filter(e => e.category === c.key).reduce((s, e) => s + e.amount, 0);
+        const ratio = spentTotal > 0 ? (sum / spentTotal) : 0;
+        barsEl.innerHTML += `<div><div class="status-row"><span>${c.key}</span><span class="muted">${fmtPeso(sum)} (${Math.round(ratio * 100)}%)</span></div><div class="runway-track"><div class="runway-fill" style="width:${Math.round(ratio * 100)}%;background:${c.color};"></div></div></div>`;
+        pieLeg.innerHTML += `<div><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${c.color};margin-right:6px;"></span>${c.key}: ${Math.round(ratio * 100)}%</div>`;
+        if (sum > 0) {
+          const deg = ratio * 360;
+          if (deg >= 359.9) {
+            piePaths += `<circle cx="50" cy="50" r="45" fill="${c.color}" />`;
+          } else {
+            const rad1 = (startDeg - 90) * Math.PI / 180;
+            const rad2 = (startDeg + deg - 90) * Math.PI / 180;
+            const x1 = 50 + 45 * Math.cos(rad1), y1 = 50 + 45 * Math.sin(rad1);
+            const x2 = 50 + 45 * Math.cos(rad2), y2 = 50 + 45 * Math.sin(rad2);
+            piePaths += `<path d="M50,50 L${x1.toFixed(1)},${y1.toFixed(1)} A45,45 0 ${deg > 180 ? 1 : 0},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${c.color}" />`;
+          }
+          startDeg += deg;
+        }
+      });
+      pieSvg.innerHTML = spentTotal > 0 ? piePaths : `<circle cx="50" cy="50" r="45" fill="var(--surface-alt)" />`;
+
+      // 7-Day Line Chart
+      const tSvg = document.getElementById("trendLineSvg");
+      const dayTotals = [];
+      for (let i = 6; i >= 0; i--) {
+        const iso = todayIso(-i);
+        dayTotals.push(state.expenses.filter(e => e.dayIso === iso).reduce((s, e) => s + e.amount, 0));
+      }
+      const max7 = Math.max(...dayTotals, 200);
+      const tPts = dayTotals.map((v, i) => `${(16 + i * 51).toFixed(1)},${(92 - 74 * (v / max7)).toFixed(1)}`);
+      tSvg.innerHTML = `<line x1="14" y1="92" x2="326" y2="92" stroke="var(--border)" /><polyline fill="none" stroke="var(--safe)" stroke-width="3" points="${tPts.join(" ")}" />` +
+        tPts.map(p => `<circle cx="${p.split(",")[0]}" cy="${p.split(",")[1]}" r="4" fill="var(--safe)" />`).join("");
+
+      // Consistency Calendar
+      const now = new Date();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const activeIsos = new Set(state.expenses.map(e => e.dayIso));
+      const calGrid = document.getElementById("calendarGrid");
+      calGrid.innerHTML = "";
+      document.getElementById("calTitle").textContent = now.toLocaleString("en-US", { month: "long", year: "numeric" });
+      document.getElementById("calActiveCount").textContent = `${activeIsos.size} active day(s)`;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = new Date(now.getFullYear(), now.getMonth(), d).toISOString().slice(0, 10);
+        const cell = document.createElement("div");
+        cell.className = "cal-cell" + (iso === todayStr ? " today" : "");
+        cell.innerHTML = `<span>${d}</span><span class="cal-dot${activeIsos.has(iso) ? " active" : ""}"></span>`;
+        calGrid.appendChild(cell);
+      }
+
+      // Shareable Summary
+      document.getElementById("summaryPreview").textContent = [
+        "🛡️ ARAWAN BUDGET • PETSA DE PELIGRO SUMMARY",
+        `Status: ${statusTxt} (Streak: ${state.streak}d)`,
+        `Remaining Balance: ${fmtPeso(state.balance)}`,
+        locked > 0 ? `Locked Emergency Fund: ${fmtPeso(locked)} (Untouchable)` : null,
+        totalUtang > 0 ? `Utang/Bills Reserved: ${fmtPeso(totalUtang)}` : null,
+        `Real Daily Allowance: ${fmtPeso(daily)}/day (${days}d left)`,
+        state.paisaPisoJar > 0 ? `Paisa-Piso Jar: ${fmtPeso(state.paisaPisoJar)}` : null,
+        "Kaya natin 'to hanggang next sahod! 💪"
+      ].filter(Boolean).join("\n");
+    }
+
+    // Event bindings
+    document.getElementById("lockedInput").addEventListener("input", e => { state.lockedFund = Math.max(0, parseFloat(e.target.value) || 0); saveState(); render(); });
+    document.querySelectorAll("#quickLockedRow .chip").forEach(b => b.addEventListener("click", () => { state.lockedFund = Number(b.dataset.locked); saveState(); render(); }));
+    document.getElementById("balanceInput").addEventListener("input", e => { state.balance = Math.max(0, parseFloat(e.target.value) || 0); saveState(); render(); });
+    document.querySelectorAll("[data-delta]").forEach(b => b.addEventListener("click", () => { state.balance = Math.max(0, state.balance + Number(b.dataset.delta)); saveState(); render(); }));
+    document.getElementById("savingsInput").addEventListener("input", e => { state.targetSavings = Math.max(0, parseFloat(e.target.value) || 0); saveState(); render(); });
+    document.querySelectorAll("#quickSavingsRow .chip").forEach(b => b.addEventListener("click", () => { state.targetSavings = Number(b.dataset.savings); saveState(); render(); }));
+    document.getElementById("hardLimitInput").addEventListener("input", e => { state.hardDailyLimit = Math.max(0, parseFloat(e.target.value) || 0); saveState(); render(); });
+    document.querySelectorAll("#quickHardLimitRow .chip").forEach(b => b.addEventListener("click", () => { state.hardDailyLimit = Number(b.dataset.limit); saveState(); render(); }));
+    document.getElementById("paydayInput").addEventListener("change", e => { if (e.target.value) { state.payday = e.target.value; saveState(); render(); } });
+    document.querySelectorAll("#quickDaysRow .chip").forEach(b => b.addEventListener("click", () => { state.payday = todayIso(Number(b.dataset.days)); saveState(); render(); }));
+
+    document.getElementById("checkMetBtn").addEventListener("click", () => {
+      const t = todayIso(0);
+      if (state.lastCheckInDate !== t || state.lastCheckInStatus !== "MET") {
+        state.streak = state.lastCheckInDate === todayIso(-1) ? state.streak + 1 : Math.max(1, state.streak + (state.lastCheckInDate === t ? 1 : 0));
+        if (state.lastCheckInDate === "") state.streak = 1;
+        state.checkInSaved += (Math.max(0, Number(state.targetSavings) || 0) / calcDaysLeft());
+        state.lastCheckInDate = t; state.lastCheckInStatus = "MET";
+        saveState(); render();
+      }
+    });
+    document.getElementById("checkExceedBtn").addEventListener("click", () => {
+      state.streak = 0; state.lastCheckInDate = todayIso(0); state.lastCheckInStatus = "EXCEEDED"; saveState(); render();
+    });
+
+    document.getElementById("refreshWisdomBtn").addEventListener("click", () => {
+      currentQuote = WISDOM_QUOTES[Math.floor(Math.random() * WISDOM_QUOTES.length)]; render();
+    });
+    document.getElementById("coachToggle").addEventListener("change", e => { state.coachEnabled = e.target.checked; saveState(); render(); });
+    document.getElementById("listenBtn").addEventListener("click", () => {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(currentQuote));
+      }
+    });
+    document.getElementById("reminderToggle").addEventListener("change", async e => {
+      if (e.target.checked && "Notification" in window && Notification.permission !== "granted") {
+        const perm = await Notification.requestPermission();
+        state.reminderEnabled = perm === "granted";
+      } else {
+        state.reminderEnabled = e.target.checked;
+      }
+      saveState(); render();
+    });
+    document.getElementById("testNotifyBtn").addEventListener("click", async () => {
+      if ("Notification" in window) {
+        if (Notification.permission !== "granted") await Notification.requestPermission();
+        if (Notification.permission === "granted") {
+          new Notification("Oras na mag-log ng gastos! 📝", { body: "I-log ang gastos at i-check-in ang Arawan streak mo." });
+        }
+      }
+    });
+
+    document.getElementById("addUtangBtn").addEventListener("click", () => {
+      const t = document.getElementById("utangTitle");
+      const a = document.getElementById("utangAmt");
+      const amt = parseFloat(a.value);
+      if (t.value.trim() && amt > 0) {
+        state.utangItems.unshift({ id: Date.now().toString(36), title: t.value.trim(), amount: amt });
+        t.value = ""; a.value = ""; saveState(); render();
+      }
+    });
+
+    document.querySelectorAll("#categoryRow .chip").forEach(b => b.addEventListener("click", () => {
+      state.selectedCategory = b.dataset.cat;
+      document.querySelectorAll("#categoryRow .chip").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); saveState();
+    }));
+    document.getElementById("roundUpToggle").addEventListener("change", e => { state.roundUpEnabled = e.target.checked; saveState(); render(); });
+    document.querySelectorAll("[data-inc]").forEach(b => b.addEventListener("click", () => {
+      state.roundUpInc = Number(b.dataset.inc);
+      document.querySelectorAll("[data-inc]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); saveState(); render();
+    }));
+
+    document.getElementById("logSpendBtn").addEventListener("click", () => {
+      const amtEl = document.getElementById("spendAmt");
+      const noteEl = document.getElementById("spendNote");
+      const amt = parseFloat(amtEl.value);
+      if (!amt || amt <= 0) return;
+      const change = state.roundUpEnabled ? calcRoundUp(amt, state.roundUpInc) : 0;
+      state.balance = Math.max(0, state.balance - amt - change);
+      state.paisaPisoJar += change;
+      state.expenses.unshift({
+        id: Date.now().toString(36), amount: amt, category: state.selectedCategory,
+        note: noteEl.value.trim(), dayIso: todayIso(0),
+        time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+      });
+      amtEl.value = ""; noteEl.value = ""; saveState(); render();
+    });
+
+    document.getElementById("exportCsvBtn").addEventListener("click", async () => {
+      const esc = (v) => /[,"\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+      const csv = ["Date,Category,Note,Amount (PHP)", ...state.expenses.map(e => [esc(e.dayIso + " " + e.time), esc(e.category), esc(e.note), e.amount.toFixed(2)].join(","))].join("\n");
+      try { await navigator.clipboard.writeText(csv); } catch { alert(csv); }
+    });
+    document.getElementById("copySummaryBtn").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(document.getElementById("summaryPreview").textContent); } catch {}
+    });
+    document.getElementById("themeBtn").addEventListener("click", () => { state.dark = !state.dark; saveState(); render(); });
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (confirm("Reset your Arawan Budget survival plan?")) { state = { ...defaultState(), dark: state.dark }; saveState(); render(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>

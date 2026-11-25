@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Arawan Budget</string>
+    <string name="subtitle_tagline">Petsa De Peligro Survival Planner</string>
+    <string name="cd_toggle_theme">Toggle dark or light mode</string>
+    <string name="cd_reset_plan">Reset budget plan</string>
+    <string name="cd_pick_payday">Pick next payday date</string>
+    <string name="cd_delete_expense">Undo expense entry</string>
+    <string name="kofi_message">Nakatulong ba? Wag tayo kalimutan—pag may pera na o nakaluwag ka, mag-send ng $2 tip sa Ko-fi para sa HandleVault Digital ☕</string>
+    <string name="kofi_cta">Send $2 Tip on Ko-fi</string>
+    <string name="copy_summary">Copy Survival Summary</string>
+    <string name="share_summary">Share</string>
+    <string name="reset_title">Reset Survival Plan?</string>
+    <string name="reset_body">This will clear your logged spends, reset your balance to ₱3,500, and set payday to 7 days from today.</string>
+    <string name="reset_confirm">Reset Now</string>
+    <string name="cancel">Cancel</string>
+</resources>
